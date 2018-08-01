@@ -5,7 +5,7 @@ This is a basic Python script for monitoring temperature and humidity, and contr
 
 This was inspired by user hjbct44's PorkPi system (https://github.com/hjbct44/PorkPi).  More details about the PorkPi system can be seen in two of hjbct44's postings at SmokingMeatForums.com (https://www.smokingmeatforums.com/threads/porkpi-latest-batch.252528/ and https://www.smokingmeatforums.com/threads/curing-chamber-raspberry-pi-humidity-fluctuation.240436/).
 
-PorkPi is much more comprehensive than this system--it controls both temperature and humidity, and also includes load cells to actually weigh/track weight loss in the products that are being cured.  It also has a lot of built in resilience to take care of errors, unexpected power outs and restarts, etc.  Of course, this also makes it much larger (main script ~1000 lines) and a bit harder to grok without dedicated effort since I didn't write it myself.  So I ended up just starting from scratch, and came up with this simpler script of ~100 lines.
+PorkPi is much more comprehensive than this system--it controls both temperature and humidity, and also includes load cells to actually weigh/track weight loss in the products that are being cured.  It also has a lot of built in resilience to take care of errors, unexpected power outs and restarts, etc.  Of course, this also makes it much larger (main script ~1000 lines) and a bit harder to grok without a dedicated effort since I didn't write it myself.  So I ended up just starting from scratch, and came up with this simpler script of ~100 lines.
 
 Hardware-wise, this system consists of a:
 
@@ -17,10 +17,14 @@ Hardware-wise, this system consists of a:
 
 4.  a mini, USB-powered humidifier that is also available from China for <US$3, for example, https://www.aliexpress.com/wholesale?SearchText=mini+usb+donut+humidifier&SortType=price_asc&isFreeShip=y
 
-5.  a custom-built, 4-outlet gang box with relay controls so each outlet can be turned on/off by the RPi; the parts for this cost about $10-12 at Home Depot
+5.  a custom-built, 4-outlet gang box with relay controls so each outlet can be turned on/off by the RPi; the parts for this cost about $10-12 at Home Depot plus a few dollars for a 5V relay board
 
 6.  two USB chargers--one to power the humidifier via the relay-controlled outlet mentioned above, and the other to power the RPi from an outlet that is wired to always on
 
-Temperature control is provided by the beverage cooler itself.  Unlike a regular mini-fridge, which will almost always be too cool for dry curing even at the warmest setting, this particular beverage cooler can maintain warmer temperatures like up to 55° or 60°F, which let's me dial in an ideal dry curing temp of ~13°C (~55°F) easily.  If I were doing this with a regular fridge that could not reach higher temperatures, I would also control that directly with a relay to allow for higher temperatures.
+Temperature control is provided by the beverage cooler itself since it can be set to the ideal dry curing temperature of about ~13°C (~55°F).  If I were using a regular mini-fridge that could not be set to this higher temperature, I would control it with a relay to turn the machine on/off as needed to reach the the necessary temperature.
 
-Connectivity to Google Sheets is provided by burnash's gspread Google Spreadsheets Python API (https://github.com/burnash/gspread) using a service account with OAuth credentials.  After the service account first logs it, it is theoretically assigned an auth token that should last for one hour before another login is needed.  However, this time-limited auth token is frustratingly inconsistent in my own experience.  Sometimes it lasts for a full hour as expected, but sometimes it lasts for several hours, too.  And on the short end, sometimes it can expire after just 10-20 minutes despite the supposed one hour limit.  I get around this potential error by brute force--I simply log in frequently.
+To read data from the BME280, I use Matt Hawkins' BME280 Python script (https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python).
+
+Connectivity to Google Sheets is provided by burnash's gspread Google Spreadsheets Python API (https://github.com/burnash/gspread) using a service account with OAuth credentials.  To deal with the frustratingly inconsistent expiration of temporary auth tokens, I use brute force and simply log in frequently.  Eventually, this can be made more elegant by programatically checking for token expiration status.
+
+Using Google Sheets is slick because it can do essentially all of the heavy lifting regarding calculations, plotting graphs, etc.  And, of course, this means that one can check the status from anywhere in the world instead of having it locked behind a router on my own personal LAN.  Yes, of course, I realize I could punch a hole through the firewall, do port fowarding, put the RPi in the DMZ, etc., but this solutions avoids all that.
