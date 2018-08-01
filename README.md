@@ -21,10 +21,10 @@ Hardware-wise, this system consists of a:
 
 6.  two USB chargers--one to power the humidifier via the relay-controlled outlet mentioned above, and the other to power the RPi from an outlet that is wired to always on
 
-Temperature control is provided by the beverage cooler itself since it can be set to the ideal dry curing temperature of about ~13°C (~55°F).  If I were using a regular mini-fridge that could not be set to this higher temperature, I would control it with a relay to turn the machine on/off as needed to reach the the necessary temperature.
+Temperature control is provided by the beverage cooler itself since it can be set to the ideal dry curing temperature of about ~13°C (~55°F).  If I were using a regular mini-fridge that could not be set to this higher temperature, I would control it with a relay to turn the machine on/off and maintain the the necessary temperature.
 
-To read data from the BME280, I use Matt Hawkins' BME280 Python script (https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python).
+To read data from the BME280 sensor, I use Matt Hawkins' BME280 Python script (https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python).
 
 Connectivity to Google Sheets is provided by burnash's gspread Google Spreadsheets Python API (https://github.com/burnash/gspread) using a service account with OAuth credentials.  To deal with the frustratingly inconsistent expiration of temporary auth tokens, I use brute force and simply log in frequently.  Eventually, this can be made more elegant by programatically checking for token expiration status.
 
-Using Google Sheets is slick because it can do essentially all of the heavy lifting regarding calculations, plotting graphs, etc.  And, of course, this means that one can check the status from anywhere in the world instead of having it locked behind a router on my own personal LAN.  Yes, of course, I realize I could punch a hole through the firewall, do port fowarding, put the RPi in the DMZ, etc., but this solutions avoids all that.
+Using Google Sheets is slick because it can do essentially all of the heavy lifting regarding calculations, plotting graphs, etc.  And, of course, this means that one can monitor and check system status from anywhere in the world instead of having it locked behind a router on my own personal LAN.  Yes, of course, I realize I could punch a hole through the firewall, do port fowarding, put the RPi in the DMZ, etc., but this solutions avoids all that.
